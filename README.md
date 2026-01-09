@@ -54,23 +54,40 @@ This installation was done on Ubuntu Desktop 22.0.4 LTS, this was chosen to ensu
 
 ![Alt text](Picture1.png)
 
-The second step was initialization which entailed starting Splunk, and agreeing to the set terms and conditions using the script, I then proceeded by inputting my username and password that would be used for login.
+The second step was initialization, which entailed starting Splunk and agreeing to the set terms and conditions using the script. I then proceeded by inputting my username and password that would be used for login.
 
-The next step was for boot persistence by ensuring that Splunk could automatically initialize upon the reboot of the system, this was done through the following script: sudo /opt/splunk/bin/splunk enable boot-start
+![Alt text](Picture3.png)
 
-**Setup Justification:** The installation on a virtualized environment reduces the attack surface and the utilization of resources of the Security Information and Management (SIEM) host. The internal adapters of the virtual environment protect the BOTSv3 dataset by isolating it from the public network hence ensuring a simulation that is air-gapped SOC environment and secured.
+The next step was for boot persistence by ensuring that Splunk could automatically initialize upon the reboot of the system. This was done through the following script: sudo /opt/splunk/bin/splunk enable boot-start
+
+![Alt text](Picture2.png)
+
+![Alt text](Picture5.png)
+
+![Alt text](Picture6.png)
+
+
+**Setup Justification:** The installation on a virtualized environment reduces the attack surface and the utilization of resources of the Security Information and Management (SIEM) host. The internal adapters of the virtual environment protect the BOTSv3 dataset by isolating it from the public network, hence ensuring a simulation that is an air-gapped SOC environment and secured.
 
 **Data Ingestion**
 
-The dataset in BOTSv3 is provided as pre-indexed application, this is different from the standard log ingestion since the data has already been parsed into packets. The following steps were followed during the process:
+The dataset in BOTSv3 is provided as a pre-indexed application; this is different from the standard log ingestion since the data has already been parsed into packets. The following steps were followed during the process:
 
 **Preparation:** The BOTSv3 data was downloaded from the official GitHub account through the provided link. During the installation process, I followed the stated steps while installing the additional packages that were critical to the application.
 
+![Alt text](Picture7.png)
+
 **Deployment:** This stage entailed extracting the dataset directly into the directory that contains Splunk using the following script shown below.
+
+![Alt text](Picture8.png)
 
 **Permission:** This step entails ensuring the splunk user has access to the newly added files, this helps to prevent errors from the database and lock file issues, this was achieved using the following command: sudo chown -R splunk:splunk /opt/splunk/etc/apps/botsv3_data_set
 
+![Alt text](Picture9.png)
+
 - **Splunk Restart:** This ensures that splunk has been initialized to the new index.
+
+![Alt text](Picture10.png)
 
 **Data Validation**
 
@@ -78,7 +95,13 @@ The following validation metrics were utilized during the process:
 
 **Source Confirmation:** To confirm the source I ran the following query to ensure that the presence of the events: **index=botsv3 earliest=0**
 
+![Alt text](Picture11.png)
+
+![Alt text](Picture12.png)
+
 **Source Integrity:** I verified the presence of critical source types like the AWS cloud trail. aws:cloudtrail, S3AccessLogs, and WinHostMon using: index=botsv3 | stats count by sourcetype
+
+![Alt text](Picture13.png)
 
 **Time Synchronization:** I used the UTC+0 time zone to ensure that the events were correctly synchronized.
 
@@ -94,6 +117,8 @@ Case Set: Cloud Integrity and Asset Inventory
 
 Splunk Query to Use: index=botsv3 sourcetype="aws:cloudtrail" | table userIdentity.sessionContext.attributes.mfaAuthenticated, eventName, username
 
+![Alt text](Picture14.png)
+
 Relevance to SOC: Monitoring for Multi Factor Authentication is an important priority for Detection. In the Frothly environment, the Taedonggang group took advantage of those accounts that did not have multi factor authentication. It is very important for a SOC to have a real-time alert for console logins or API calls that are high-privilege like when creating access keys.
 
 **Question 202: Web Server Hardware Baseline**
@@ -102,11 +127,15 @@ Relevance to SOC: Monitoring for Multi Factor Authentication is an important pri
 
 **Answer:** E5-2676 v3 @2.40 GHZ
 
+![Alt text](Picture15.png)
+
 **Relevance to SOC:** Asset Management and Anomaly Detection entail the ability to identify hardware specifications. An analyst is able to detect unauthorized resource usage once he is able to identify the baseline CPU. A good example is when a web server all of a sudden indicates a full 100% CPU utilization on a separate architecture, a container escape or the deployment of a crypto mining binary by an attacker could be indicated.
 
 **Q203 and Q204: The S3 Public Exposure Incident**
 
 **Question: Bud accidentally makes an S3 bucket publicly accessible. What is the Event ID of the API call, and what is the Bucket Name?**
+
+![Alt text](Picture16.png)
 
 **Answer (Event ID):** ab45689d-69cd-41e7-8705-5350402cf7a
 
