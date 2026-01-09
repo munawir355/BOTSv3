@@ -52,6 +52,8 @@ The initial step in simulating a professional SOC infrastructure involves settin
 
 This installation was done on Ubuntu Desktop 22.0.4 LTS, this was chosen to ensure that Splunk remains stable and compatible with its dependencies. The first step entailed acquiring the Splunk Enterprise package from the official website. I t used the Debian manager to execute the installation as shown below:
 
+![Alt text](Picture1.png)
+
 The second step was initialization which entailed starting Splunk, and agreeing to the set terms and conditions using the script, I then proceeded by inputting my username and password that would be used for login.
 
 The next step was for boot persistence by ensuring that Splunk could automatically initialize upon the reboot of the system, this was done through the following script: sudo /opt/splunk/bin/splunk enable boot-start
